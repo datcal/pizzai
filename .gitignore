@@ -1,0 +1,10 @@
+.dart_tool
+.packages
+pubspec.lock
+build/
+coverage/
+.test_coverage.dart
+*.lcov
+.DS_Store
+.env
+.vscode
