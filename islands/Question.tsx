@@ -3,6 +3,8 @@ import { useState,useCallback } from "preact/hooks";
 export default function Question() {
     const [prompt, setPrompt] = useState("");
     const [result, setResult] = useState("");
+    const [imageLoading, setImageLoading] = useState(false);
+    const [image, setImage] = useState("");
     const [loading, setLoading] = useState(false);
   
     const onValueChange = useCallback((e: any) => {
@@ -17,8 +19,10 @@ export default function Question() {
         body: prompt,
       });
   
-      const data = await response.text();
-      setResult(data);
+      const data = await response.json();
+      setResult(data.message);
+      setImageLoading(true);
+      setImage(data.image);
       setLoading(false);
     }, [prompt]);
   
@@ -37,7 +41,8 @@ export default function Question() {
         >
           I'm hungry 🍕 🍕 🍕
         </button>
-        <div className="mt-10 whitespace-pre-wrap">
+        <div className="mt-10 content-center whitespace-pre-wrap">
+          {imageLoading ? <img src={image} width={256} height={256} /> : null}
           {loading ? "the pizza person is thinking" : result}
         </div>
       </div>

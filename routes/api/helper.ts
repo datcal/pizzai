@@ -38,6 +38,20 @@ export const handler = async (req: Request, _ctx: HandlerContext) => {
     const query = await req.text();
     const question = query.substring(0, 200);
 
+
+    const imageResponse = await fetch("https://api.openai.com/v1/images/generations", {
+        method: "POST",
+        headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${GPT_API_KEY}`,
+        },
+        body: JSON.stringify({
+        prompt: 'old italian pizza chef, 300 years in the business, knows all kinds of pizza, angry, realistic',
+        n: 1,
+        size : "256x256",
+        }),
+    });
+
     const response = await fetch(GPT_API_URL, {
         method: "POST",
         headers: {
@@ -55,6 +69,10 @@ export const handler = async (req: Request, _ctx: HandlerContext) => {
     });
 
     const json = await response.json();
-    return new Response(json.choices?.[0].message.content);       
-
+    const imageJson = await imageResponse.json();
+    const returnJson = {
+        "message": json.choices?.[0].message.content,
+        "image": imageJson.data[0].url
+    }
+    return new Response(JSON.stringify(returnJson));
 };
